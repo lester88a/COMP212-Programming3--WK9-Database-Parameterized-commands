@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -73,11 +74,12 @@ namespace Parameterized_commands
 
                 //4.get the data stream
                 reader = command.ExecuteReader();
-
+                Console.WriteLine("companyName, \t\t\t ContactName");
                 //5.write each record
                 while (reader.Read())
                 {
-                    Console.WriteLine("{0}, {1}", reader["companyName"], reader["ContactName"]);//also can use reader[1], reader[2]
+                    
+                    Console.WriteLine("{0}, \t\t{1}", reader["companyName"], reader["ContactName"]);//also can use reader[1], reader[2]
                 }
             }
             finally
@@ -92,6 +94,28 @@ namespace Parameterized_commands
                     connection.Close();
                 }
             }
+            /**********************************************************************************************************/
+
+            //Using stored procedures
+            //Steps:
+            //1. create a command object identifying stored procedure
+            //                          store procedure name: xyz
+            SqlCommand sqlcmd = new SqlCommand("xyz", connection);
+
+            //2. set the command object to let the compailer know that is has to excute a stored procedure (in place of an sql command)
+            sqlcmd.CommandType = CommandType.StoredProcedure;
+
+            //sending parameters to stored procedures:
+            //1. create a command object identifying stored procedure
+            SqlCommand sqlcmd2 = new SqlCommand("xyz", connection);
+            //2. set the command object so it knows it has to execute a procedure
+            sqlcmd2.CommandType = CommandType.StoredProcedure;
+            //3. add the parameter to command which will be passed to the store procedure
+            string custID = "FURIB";
+            sqlcmd2.Parameters.Add(new SqlParameter("@customerID", custID));
+
+            //excute
+
 
         }
     }
